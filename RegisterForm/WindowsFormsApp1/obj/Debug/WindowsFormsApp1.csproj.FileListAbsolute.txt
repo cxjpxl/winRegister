@@ -1,0 +1,13 @@
+E:\cxjWinWorkPace\RegisterForm\RegisterForm\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.exe.config
+E:\cxjWinWorkPace\RegisterForm\RegisterForm\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.exe
+E:\cxjWinWorkPace\RegisterForm\RegisterForm\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.pdb
+E:\cxjWinWorkPace\RegisterForm\RegisterForm\WindowsFormsApp1\bin\Debug\Newtonsoft.Json.dll
+E:\cxjWinWorkPace\RegisterForm\RegisterForm\WindowsFormsApp1\bin\Debug\Newtonsoft.Json.xml
+E:\cxjWinWorkPace\RegisterForm\RegisterForm\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Form1.resources
+E:\cxjWinWorkPace\RegisterForm\RegisterForm\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.loginForm.resources
+E:\cxjWinWorkPace\RegisterForm\RegisterForm\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Properties.Resources.resources
+E:\cxjWinWorkPace\RegisterForm\RegisterForm\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.GenerateResource.Cache
+E:\cxjWinWorkPace\RegisterForm\RegisterForm\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.CoreCompileInputs.cache
+E:\cxjWinWorkPace\RegisterForm\RegisterForm\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.exe
+E:\cxjWinWorkPace\RegisterForm\RegisterForm\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.pdb
+E:\cxjWinWorkPace\RegisterForm\RegisterForm\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csprojResolveAssemblyReference.cache
