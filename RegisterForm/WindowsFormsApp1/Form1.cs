@@ -219,5 +219,41 @@ namespace WindowsFormsApp1
             customersBindingSource.ResetBindings(true);
         }
 
+        //导出按键
+        private void outPutBtn_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFile1 = new SaveFileDialog();
+            saveFile1.Filter = "文本文件(.txt)|*.txt";
+            saveFile1.FilterIndex = 1;
+            if (saveFile1.ShowDialog() == System.Windows.Forms.DialogResult.OK && saveFile1.FileName.Length > 0)
+            {
+                System.IO.StreamWriter sw = new System.IO.StreamWriter(saveFile1.FileName, false);
+                try
+                {
+
+                    for (int i = 0; i < list.Count; i++) {
+                        RegisterInfo registerInfo = list[i];
+                        if (!String.IsNullOrEmpty(registerInfo.userEditStr)) {
+                            String str = registerInfo.tag + "\t" +
+                                    registerInfo.userEditStr + "\t" +
+                                    registerInfo.pwdEditStr + "\t" +
+                                    registerInfo.webUrl + "\t" +
+                                    registerInfo.moneyPwdEditStr + "\t" +
+                                    registerInfo.responseString + "\n";
+                            sw.WriteLine(str);
+                        }
+                    }
+                    
+                }
+                catch
+                {
+                    throw;
+                }
+                finally
+                {
+                    sw.Close();
+                }
+            }
+        }
     }
 }

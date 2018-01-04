@@ -30,6 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.emailEdit = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.qqEdit = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.phoneNumEdit = new System.Windows.Forms.TextBox();
@@ -44,9 +46,6 @@
             this.userEdit = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.sysDataGridView = new System.Windows.Forms.DataGridView();
-            this.emailEdit = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.emailStrDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tagDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.responseStringDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.statusDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -57,10 +56,12 @@
             this.moneyPwdEditStrDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.phoneNumEditStrDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.qqEditStrDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.emailStrDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.yearEditStrDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.questionStrDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ansStrDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.registerInfoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.outPutBtn = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sysDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.registerInfoBindingSource)).BeginInit();
@@ -68,6 +69,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.outPutBtn);
             this.groupBox1.Controls.Add(this.emailEdit);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.qqEdit);
@@ -89,6 +91,25 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "注册信息添写";
+            // 
+            // emailEdit
+            // 
+            this.emailEdit.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.emailEdit.Location = new System.Drawing.Point(80, 223);
+            this.emailEdit.Name = "emailEdit";
+            this.emailEdit.Size = new System.Drawing.Size(164, 23);
+            this.emailEdit.TabIndex = 16;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label8.ForeColor = System.Drawing.Color.Red;
+            this.label8.Location = new System.Drawing.Point(8, 226);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(49, 14);
+            this.label8.TabIndex = 15;
+            this.label8.Text = "邮箱：";
             // 
             // qqEdit
             // 
@@ -245,32 +266,6 @@
             this.sysDataGridView.Size = new System.Drawing.Size(590, 384);
             this.sysDataGridView.TabIndex = 1;
             // 
-            // emailEdit
-            // 
-            this.emailEdit.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.emailEdit.Location = new System.Drawing.Point(80, 223);
-            this.emailEdit.Name = "emailEdit";
-            this.emailEdit.Size = new System.Drawing.Size(164, 23);
-            this.emailEdit.TabIndex = 16;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label8.ForeColor = System.Drawing.Color.Red;
-            this.label8.Location = new System.Drawing.Point(8, 226);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(49, 14);
-            this.label8.TabIndex = 15;
-            this.label8.Text = "邮箱：";
-            // 
-            // emailStrDataGridViewTextBoxColumn
-            // 
-            this.emailStrDataGridViewTextBoxColumn.DataPropertyName = "emailStr";
-            this.emailStrDataGridViewTextBoxColumn.HeaderText = "邮箱";
-            this.emailStrDataGridViewTextBoxColumn.Name = "emailStrDataGridViewTextBoxColumn";
-            this.emailStrDataGridViewTextBoxColumn.Width = 150;
-            // 
             // tagDataGridViewTextBoxColumn
             // 
             this.tagDataGridViewTextBoxColumn.DataPropertyName = "tag";
@@ -354,6 +349,13 @@
             this.qqEditStrDataGridViewTextBoxColumn.ReadOnly = true;
             this.qqEditStrDataGridViewTextBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
+            // emailStrDataGridViewTextBoxColumn
+            // 
+            this.emailStrDataGridViewTextBoxColumn.DataPropertyName = "emailStr";
+            this.emailStrDataGridViewTextBoxColumn.HeaderText = "邮箱";
+            this.emailStrDataGridViewTextBoxColumn.Name = "emailStrDataGridViewTextBoxColumn";
+            this.emailStrDataGridViewTextBoxColumn.Width = 150;
+            // 
             // yearEditStrDataGridViewTextBoxColumn
             // 
             this.yearEditStrDataGridViewTextBoxColumn.DataPropertyName = "yearEditStr";
@@ -381,6 +383,16 @@
             // registerInfoBindingSource
             // 
             this.registerInfoBindingSource.DataSource = typeof(WindowsFormsApp1.utlis.RegisterInfo);
+            // 
+            // outPutBtn
+            // 
+            this.outPutBtn.Location = new System.Drawing.Point(11, 316);
+            this.outPutBtn.Name = "outPutBtn";
+            this.outPutBtn.Size = new System.Drawing.Size(223, 22);
+            this.outPutBtn.TabIndex = 17;
+            this.outPutBtn.Text = "导出";
+            this.outPutBtn.UseVisualStyleBackColor = true;
+            this.outPutBtn.Click += new System.EventHandler(this.outPutBtn_Click);
             // 
             // Form1
             // 
@@ -435,6 +447,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn yearEditStrDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn questionStrDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn ansStrDataGridViewTextBoxColumn;
+        private System.Windows.Forms.Button outPutBtn;
     }
 }
 
