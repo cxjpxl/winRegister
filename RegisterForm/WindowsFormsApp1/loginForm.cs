@@ -16,7 +16,7 @@ namespace WindowsFormsApp1
         private void loginForm_Load(object sender, EventArgs e)
         {
             utlis.YDMWrapper.YDM_SetAppInfo(Config.codeAppId, Config.codeSerect);
-            /*codeUserEdit.Text = "cxj81886404";
+           /* codeUserEdit.Text = "cxj81886404";
             codePwdEdit.Text = "cxj13580127662";*/
         }
 

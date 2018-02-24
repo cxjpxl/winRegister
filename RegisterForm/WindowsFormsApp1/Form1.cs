@@ -12,6 +12,9 @@ namespace WindowsFormsApp1
 
         private List<RegisterInfo> list = new List<RegisterInfo>();
         private BindingSource customersBindingSource = new BindingSource();
+        private int x = 0, y = 0;
+        private bool hasData = false;
+        private bool isFirst = false;
 
         public Form1()
         {
@@ -26,11 +29,14 @@ namespace WindowsFormsApp1
             this.customersBindingSource.DataSource = list;
             this.sysDataGridView.DataSource = this.customersBindingSource;
             // customersBindingSource.ResetBindings(true);
+            ThreadPool.SetMaxThreads(50, 50);//不宜设置过大
         }
 
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
+            timer1.Stop();
+            timer1.Dispose();
             Application.Exit();
         }
 
@@ -38,14 +44,13 @@ namespace WindowsFormsApp1
         private void registerBtn_Click(object sender, EventArgs e)
         {
 
-         /*   userEdit.Text = "ccc11116";
+           /* userEdit.Text = "ccc111";
             pwdEdit.Text = "a123456";
-            curPwdEdit.Text = "a123456";
-            nameEidt.Text = "王姆都";
+            nameEidt.Text = "王姆后";
             moneyPwdEdit.Text = "123456";
-            phoneNumEdit.Text = "13539322122";
-            qqEdit.Text = "8754222";
-            emailEdit.Text = "8754222@qq.com";*/
+            phoneNumEdit.Text = "13539322124";
+            qqEdit.Text = "875422211";
+            emailEdit.Text = "875422211@qq.com";*/
             String userEditStr = userEdit.Text.ToString().Trim();
             if (String.IsNullOrEmpty(userEditStr)) {
                 MessageBox.Show("账号不能为空!");
@@ -132,7 +137,7 @@ namespace WindowsFormsApp1
             String yearEditStr = "1984-01-03";
 
             Config.httpTag++;
-
+            isFirst = true;
             //数据源的处理
             for (int i = 0; i < list.Count; i++) {
                 RegisterInfo registerInfo = list[i];
@@ -145,7 +150,8 @@ namespace WindowsFormsApp1
                     || registerInfo.tag.Equals("U")
                     || registerInfo.tag.Equals("R")
                     || registerInfo.tag.Equals("G")
-                    || registerInfo.tag.Equals("F"))
+                    || registerInfo.tag.Equals("F")
+                    || registerInfo.tag.Equals("D"))
                 {
                     registerInfo.moneyPwdEditStr = moneyPwdEditStr.Substring(0, 4);
                 }
@@ -153,9 +159,10 @@ namespace WindowsFormsApp1
                 registerInfo.qqEditStr = qqEditStr;
                 registerInfo.yearEditStr = yearEditStr;
                 //开始更新数据  更新数据后 重新user更新时间 然后打开定时器
-                Thread t = new Thread(new ParameterizedThreadStart(this.goRegister));
-                t.Start(i);
-
+                /*  Thread t = new Thread(new ParameterizedThreadStart(this.goRegister));
+                    t.IsBackground = true;
+                    t.Start(i);*/
+                ThreadPool.QueueUserWorkItem(new WaitCallback(this.goRegister),i);
             }
             updateUi(Config.httpTag);
         }
@@ -198,10 +205,12 @@ namespace WindowsFormsApp1
                     case "U": 
                         RegisterUtils.goRegisterU(this, registerInfo, httpTag, index);
                         break;
+                    case "D":
+                        RegisterUtils.goRegisterD(this, registerInfo, httpTag, index);
+                        break;
                 }
             }
             catch (Exception e) {
-                Console.WriteLine(e.ToString());
                 if (httpTag != Config.httpTag) return;
                 Invoke(new Action(() =>
                 {
@@ -216,7 +225,21 @@ namespace WindowsFormsApp1
 
         public void updateUi(int httpTag) {
             if (Config.httpTag != httpTag) return;
-            customersBindingSource.ResetBindings(true);
+            hasData = true;
+            if (list.Count < 50) {
+                timer1.Stop();
+                customersBindingSource.ResetBindings(true);
+                this.sysDataGridView.FirstDisplayedScrollingRowIndex = this.y;
+                this.sysDataGridView.FirstDisplayedScrollingColumnIndex = this.x;
+                return;
+            }
+            if (this.isFirst) {
+                this.isFirst = false;
+                customersBindingSource.ResetBindings(true);
+                this.sysDataGridView.FirstDisplayedScrollingRowIndex = this.y;
+                this.sysDataGridView.FirstDisplayedScrollingColumnIndex = this.x;
+                return;
+            }
         }
 
         //导出按键
@@ -253,6 +276,31 @@ namespace WindowsFormsApp1
                 {
                     sw.Close();
                 }
+            }
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            timer1.Stop();
+            if (hasData) {
+                customersBindingSource.ResetBindings(true);
+                this.sysDataGridView.FirstDisplayedScrollingRowIndex = this.y;
+                this.sysDataGridView.FirstDisplayedScrollingColumnIndex = this.x;
+                hasData = false;
+            }
+            timer1.Start();
+        }
+
+    
+
+        private void sysDataGridView_Scroll(object sender, ScrollEventArgs e)
+        {
+            if (e.ScrollOrientation == ScrollOrientation.VerticalScroll)
+            {
+                this.y = e.NewValue;
+            }
+            else if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll) {
+                this.x = e.NewValue;
             }
         }
     }

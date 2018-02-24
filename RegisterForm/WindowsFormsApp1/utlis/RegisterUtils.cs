@@ -688,18 +688,7 @@ namespace WindowsFormsApp1.utlis
                 }));
                 return;
             }
-            /*
-          
-          
-           pwd1:0
-           pwd2:0
-           pwd3:1
-           pwd4:1
-           none:
-           agree:Y
-
-            */
-
+           
             headJObject["Referer"] = registerInfo.webUrl + "/New_User?agentid=";
             //开始使用注册接口
             String registerUrl = registerInfo.webUrl + "/New_User";
@@ -723,6 +712,7 @@ namespace WindowsFormsApp1.utlis
                        "&none=" +
                        "&agree=Y";
             String rlt = HttpUtils.HttpPostHeader(registerUrl, pStr, "application/x-www-form-urlencoded", registerInfo.cookie, headJObject);
+            Console.WriteLine(rlt);
             if (String.IsNullOrEmpty(rlt))
             {
                 form1.Invoke(new Action(() =>
@@ -1222,6 +1212,87 @@ namespace WindowsFormsApp1.utlis
                 }));
                 return;
             }
+        }
+
+        /*****************D系统注册***********************************/
+        public static void goRegisterD(Form1 form1, RegisterInfo registerInfo, int httpTag, int index)
+        {
+            if (Config.httpTag != httpTag) return;
+            registerInfo.status = 1; //请求中
+            registerInfo.responseString = "请求中";
+            if (form1 != null)
+            {
+                form1.Invoke(new Action(() =>
+                {
+                    form1.updateUi(httpTag);
+                }));
+            }
+
+            registerInfo.cookie = new CookieContainer();
+            JObject headJObject = new JObject();
+            headJObject["Host"] = FileUtils.changeBaseUrl(registerInfo.webUrl);
+            headJObject["Origin"] = registerInfo.webUrl;
+
+         
+            if (Config.httpTag != httpTag) return;
+            
+
+
+            headJObject["Referer"] = registerInfo.webUrl + "/views/html/register.html";
+            //开始使用注册接口
+            String registerUrl = registerInfo.webUrl + "/v/user/reg";
+            String pStr ="account="+registerInfo.userEditStr+
+                        "&password="+registerInfo.pwdEditStr+
+                        "&confirmPassword="+registerInfo.pwdEditStr+
+                        "&fullName="+ WebUtility.UrlEncode(registerInfo.nameEidtStr)+
+                        "&pwd1=" + registerInfo.moneyPwdEditStr.Substring(0, 1) +
+                        "&pwd2="+ registerInfo.moneyPwdEditStr.Substring(1, 1) +
+                        "&pwd3="+ registerInfo.moneyPwdEditStr.Substring(2, 1) +
+                        "&pwd4="+ registerInfo.moneyPwdEditStr.Substring(3, 1) +
+                        "&phone="+registerInfo.phoneNumEditStr+
+                        "&qq=" + registerInfo.qqEditStr +
+                         "&weixin=" + registerInfo.qqEditStr +
+                          "&email=" + registerInfo.emailStr +
+                         "&agree=on" +
+                         "&fundPwd="+registerInfo.moneyPwdEditStr;
+
+            String rlt = HttpUtils.HttpPostHeader(registerUrl, pStr, "application/x-www-form-urlencoded", registerInfo.cookie, headJObject);
+            Console.WriteLine("D:"+rlt);
+            if (rlt == null)
+            {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 2;
+                    registerInfo.responseString = "已被注册";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+
+
+            if (rlt.Equals(""))
+            {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 2;
+                    registerInfo.responseString = "成功";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+            else {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 3;
+                    registerInfo.responseString = "注册失败";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+
         }
     }
 }
