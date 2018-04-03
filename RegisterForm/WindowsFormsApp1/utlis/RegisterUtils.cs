@@ -88,7 +88,7 @@ namespace WindowsFormsApp1.utlis
                           "&pwd2=" + registerInfo.moneyPwdEditStr.Substring(1, 1)+
                           "&pwd3=" + registerInfo.moneyPwdEditStr.Substring(2, 1)+
                           "&pwd4=" + registerInfo.moneyPwdEditStr.Substring(3, 1)+
-                          "&MultiPwd=4&qq_num=&email=&agree=Y&OK2="+ WebUtility.UrlEncode("确认");
+                          "&MultiPwd=4&qq_num="+registerInfo.qqEditStr+"&email="+registerInfo.emailStr+"&agree=Y&OK2="+ WebUtility.UrlEncode("确认");
             headJObject["Origin"] = registerInfo.webUrl;
             String rlt = HttpUtils.HttpPostHeader(registerUrl,pStr, "application/x-www-form-urlencoded", registerInfo.cookie,headJObject);
             if (String.IsNullOrEmpty(rlt)) {
@@ -1231,12 +1231,45 @@ namespace WindowsFormsApp1.utlis
             registerInfo.cookie = new CookieContainer();
             JObject headJObject = new JObject();
             headJObject["Host"] = FileUtils.changeBaseUrl(registerInfo.webUrl);
+            //先处理注册的
+            String limitStr = registerInfo.webUrl+ "/data/json/limit/registerLimit.json?" + FormUtils.getCurrentTime() ;
+            String limitRlt = HttpUtils.HttpGetHeader(limitStr,"", registerInfo.cookie,headJObject);
+
+            if (String.IsNullOrEmpty(limitRlt) || !FormUtils.IsJsonObject(limitRlt)) {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 3; //失败处理
+                    registerInfo.responseString = "失败,限制失败";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+
+            JObject limitJObject = JObject.Parse(limitRlt);
+            String codeUrl = registerInfo.webUrl + "/v/vCode?t=" + FormUtils.getCurrentTime();
+            int codeNum = HttpUtils.getImage(codeUrl, index + "-" + httpTag + ".jpg", registerInfo.cookie, headJObject); //这里要分系统获取验证码
+            if (codeNum < 0)
+            {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 3; //失败处理
+                    registerInfo.responseString = "码图下载失败";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+
+            registerInfo.cookie.Add(new Cookie("md5Password", "false","/", FileUtils.changeBaseUrl(registerInfo.webUrl)));
+            registerInfo.cookie.Add(new Cookie("alertShade", "ok", "/", FileUtils.changeBaseUrl(registerInfo.webUrl)));
+            List<Cookie> list = FileUtils.GetAllCookies(registerInfo.cookie);
+            for (int i = 0; i < list.Count; i++)
+            {
+                Cookie cookie = list[i];
+            }
             headJObject["Origin"] = registerInfo.webUrl;
-
-         
             if (Config.httpTag != httpTag) return;
-            
-
 
             headJObject["Referer"] = registerInfo.webUrl + "/views/html/register.html";
             //开始使用注册接口
@@ -1252,25 +1285,23 @@ namespace WindowsFormsApp1.utlis
                         "&phone="+registerInfo.phoneNumEditStr+
                         "&qq=" + registerInfo.qqEditStr +
                          "&weixin=" + registerInfo.qqEditStr +
-                          "&email=" + registerInfo.emailStr +
-                         "&agree=on" +
+                         "&email=" + registerInfo.emailStr +
+                         "&agree=on" +""+
                          "&fundPwd="+registerInfo.moneyPwdEditStr;
-
-            String rlt = HttpUtils.HttpPostHeader(registerUrl, pStr, "application/x-www-form-urlencoded", registerInfo.cookie, headJObject);
-            Console.WriteLine("D:"+rlt);
+        
+            String rlt = HttpUtils.HttpPostHeader(registerUrl, pStr, "application/x-www-form-urlencoded; charset=UTF-8", registerInfo.cookie, headJObject);
             if (rlt == null)
             {
                 form1.Invoke(new Action(() =>
                 {
                     if (Config.httpTag != httpTag) return;
-                    registerInfo.status = 2;
+                    registerInfo.status = 3; //失败处理
                     registerInfo.responseString = "已被注册";
                     form1.updateUi(httpTag);
                 }));
                 return;
             }
-
-
+            Console.WriteLine("D:" + rlt);
             if (rlt.Equals(""))
             {
                 form1.Invoke(new Action(() =>

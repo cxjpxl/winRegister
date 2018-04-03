@@ -44,13 +44,13 @@ namespace WindowsFormsApp1
         private void registerBtn_Click(object sender, EventArgs e)
         {
 
-           /* userEdit.Text = "ccc111";
+          userEdit.Text = "uu9875114";
             pwdEdit.Text = "a123456";
-            nameEidt.Text = "王姆后";
+            nameEidt.Text = "名我";
             moneyPwdEdit.Text = "123456";
-            phoneNumEdit.Text = "13539322124";
-            qqEdit.Text = "875422211";
-            emailEdit.Text = "875422211@qq.com";*/
+            phoneNumEdit.Text = "13580165642";
+            qqEdit.Text = "6587581192";
+            emailEdit.Text = "6587581192@qq.com";
             String userEditStr = userEdit.Text.ToString().Trim();
             if (String.IsNullOrEmpty(userEditStr)) {
                 MessageBox.Show("账号不能为空!");
@@ -134,7 +134,7 @@ namespace WindowsFormsApp1
                 return;
             }
             
-            String yearEditStr = "1984-01-03";
+            String yearEditStr = "1984-01-05";
 
             Config.httpTag++;
             isFirst = true;
@@ -211,6 +211,7 @@ namespace WindowsFormsApp1
                 }
             }
             catch (Exception e) {
+                Console.WriteLine(e.ToString());
                 if (httpTag != Config.httpTag) return;
                 Invoke(new Action(() =>
                 {
