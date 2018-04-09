@@ -44,13 +44,14 @@ namespace WindowsFormsApp1
         private void registerBtn_Click(object sender, EventArgs e)
         {
 
-          userEdit.Text = "uu9875114";
-            pwdEdit.Text = "a123456";
-            nameEidt.Text = "名我";
+        /*  userEdit.Text = "mm818221";
+            pwdEdit.Text = "sa2522621";
+            nameEidt.Text = "王米三";
             moneyPwdEdit.Text = "123456";
-            phoneNumEdit.Text = "13580165642";
-            qqEdit.Text = "6587581192";
-            emailEdit.Text = "6587581192@qq.com";
+            phoneNumEdit.Text = "13580867642";
+            qqEdit.Text = "6581182";
+            emailEdit.Text = "6581182@qq.com";*/
+
             String userEditStr = userEdit.Text.ToString().Trim();
             if (String.IsNullOrEmpty(userEditStr)) {
                 MessageBox.Show("账号不能为空!");

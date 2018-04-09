@@ -368,6 +368,42 @@ namespace WindowsFormsApp1.utlis
                     form1.updateUi(httpTag);
                 }));
             }
+            registerInfo.cookie = new CookieContainer();
+            String codeUrl = registerInfo.webUrl + "/app/member/index/verify/t/" + FormUtils.getCurrentTime();
+            JObject headJObject = new JObject();
+
+            String nameUrl = registerInfo.webUrl + "/app/member/index/valid";
+            String p = "param=" + registerInfo.userEditStr + "&name=username";
+            String nameRlt = HttpUtils.HttpPostHeader(nameUrl, p, "application/x-www-form-urlencoded; charset=UTF-8", registerInfo.cookie, headJObject);
+            if (String.IsNullOrEmpty(nameRlt)||!FormUtils.IsJsonObject(nameRlt)) {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 3; //失败处理
+                    registerInfo.responseString = "接口有问题";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+
+
+            JObject nameJObject = JObject.Parse(nameRlt);
+
+            String nameInfo = (String)nameJObject["info"];
+            Console.WriteLine(nameRlt);
+            if (nameInfo!=null && nameInfo.Contains("该用户名已经存在")) {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 2; //失败处理
+                    registerInfo.responseString = "被注册过";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+
+
+
             //第一步获取验证码
             int codeMoney = YDMWrapper.YDM_GetBalance(Config.codeUserStr, Config.codePwdStr);
             if (codeMoney <= 0)
@@ -382,9 +418,7 @@ namespace WindowsFormsApp1.utlis
                 return;
             }
             if (Config.httpTag != httpTag) return;
-            registerInfo.cookie = new CookieContainer();
-            String codeUrl = registerInfo.webUrl + "/app/member/index/verify/t/" + FormUtils.getCurrentTime();
-            JObject headJObject = new JObject();
+           
             headJObject["Host"] = FileUtils.changeBaseUrl(registerInfo.webUrl);
             int codeNum = HttpUtils.getImage(codeUrl, index + "-" + httpTag + ".jpg", registerInfo.cookie, headJObject); //这里要分系统获取验证码
             if (codeNum < 0)
@@ -452,7 +486,7 @@ namespace WindowsFormsApp1.utlis
 
             JObject jObject = JObject.Parse(rlt);
             String info = (String)jObject["info"];
-
+            Console.WriteLine(rlt);
             if (info.Contains("正常"))
             {
                 form1.Invoke(new Action(() =>
