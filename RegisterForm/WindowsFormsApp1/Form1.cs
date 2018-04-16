@@ -44,13 +44,13 @@ namespace WindowsFormsApp1
         private void registerBtn_Click(object sender, EventArgs e)
         {
 
-        /*  userEdit.Text = "mm818221";
-            pwdEdit.Text = "sa2522621";
-            nameEidt.Text = "王米三";
+            userEdit.Text = "mm88818";
+            pwdEdit.Text = "sa88188";
+            nameEidt.Text = "王米大";
             moneyPwdEdit.Text = "123456";
-            phoneNumEdit.Text = "13580867642";
-            qqEdit.Text = "6581182";
-            emailEdit.Text = "6581182@qq.com";*/
+            phoneNumEdit.Text = "13580987632";
+            qqEdit.Text = "6581331122";
+            emailEdit.Text = "6581331212@qq.com";
 
             String userEditStr = userEdit.Text.ToString().Trim();
             if (String.IsNullOrEmpty(userEditStr)) {
@@ -209,6 +209,9 @@ namespace WindowsFormsApp1
                     case "D":
                         RegisterUtils.goRegisterD(this, registerInfo, httpTag, index);
                         break;
+                    case "E":
+                        RegisterUtils.goRegisterE(this, registerInfo, httpTag, index);
+                        break;
                 }
             }
             catch (Exception e) {
@@ -258,7 +261,7 @@ namespace WindowsFormsApp1
 
                     for (int i = 0; i < list.Count; i++) {
                         RegisterInfo registerInfo = list[i];
-                        if (!String.IsNullOrEmpty(registerInfo.userEditStr)) {
+                        if (!String.IsNullOrEmpty(registerInfo.userEditStr)&&registerInfo.status ==2 ) {
                             String str = registerInfo.tag + "\t" +
                                     registerInfo.userEditStr + "\t" +
                                     registerInfo.pwdEditStr + "\t" +

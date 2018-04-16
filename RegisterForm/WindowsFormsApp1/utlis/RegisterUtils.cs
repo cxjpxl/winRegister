@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using System.Threading;
 using WindowsFormsApp1.utils;
 
 namespace WindowsFormsApp1.utlis
@@ -1358,6 +1359,202 @@ namespace WindowsFormsApp1.utlis
                 return;
             }
 
+        }
+
+        /*****************E系统注册***********************************/
+        public static void goRegisterE(Form1 form1, RegisterInfo registerInfo, int httpTag, int index)
+        {
+            if (Config.httpTag != httpTag) return;
+            registerInfo.status = 1; //请求中
+            registerInfo.responseString = "请求中";
+            if (form1 != null)
+            {
+                form1.Invoke(new Action(() =>
+                {
+                    form1.updateUi(httpTag);
+                }));
+            }
+
+            registerInfo.cookie = new CookieContainer();
+            JObject headJObject = new JObject();
+            headJObject["Host"] = FileUtils.changeBaseUrl(registerInfo.webUrl);
+          
+            //先处理注册的
+            String configUrl = registerInfo.webUrl + "/regconf.do";
+            String configRlt = HttpUtils.HttpGetHeader(configUrl,"",registerInfo.cookie,headJObject);
+            if (String.IsNullOrEmpty(configRlt) || !configRlt.Contains("$_regconf")) {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 3; //失败处理
+                    registerInfo.responseString = "获取配置参数失败!";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+
+            configRlt = configRlt.Replace("var $_regconf = ", "").Trim();
+            configRlt = configRlt.Replace(";", "").Trim();
+            if (!FormUtils.IsJsonArray(configRlt))
+            {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 3; //失败处理
+                    registerInfo.responseString = "获取配置参数失败!";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+
+            if (configRlt.Contains("promoCode")) {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 3; //失败处理
+                    registerInfo.responseString = "未知,需要邀请码!";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+
+            /*
+             cardNo  银行卡
+            wechat  微信
+            receiptPwd 提款密码
+            phone	手机号码
+            userName	真实姓名
+            QQ   qq号码
+            promoCode	邀请码
+             */
+            JArray configArray = JArray.Parse(configRlt);
+            JObject pJObject  =  new JObject();
+            String cardNo = FormUtils.getCardNo() + "";
+            for (int i = 0; i < configArray.Count; i++) {
+                JObject jObject =(JObject) configArray[i];
+                String key = (String)jObject["key"];
+                switch (key) {
+                    case "cardNo":  //银行卡
+                        {
+                            pJObject["" + key] = FormUtils.getCardNo();
+                        }
+                        break;
+                    case "wechat": //微信
+                        {
+                            pJObject["" + key] = registerInfo.qqEditStr.ToString();
+                        }
+                        break;
+                    case "receiptPwd": //提款密码六到20
+                        {
+                            pJObject["" + key] = registerInfo.moneyPwdEditStr.ToString();
+                        }
+                        break;
+                    case "phone": //手机号码
+                        {
+                            pJObject["" + key] = registerInfo.phoneNumEditStr.ToString();
+                        }
+                        break;
+                    case "userName"://真实姓名
+                        {
+                            pJObject["" + key] = registerInfo.nameEidtStr.ToString();
+                        }
+                        break;
+                    case "QQ"://QQ
+                    case "qq"://QQ
+                        {
+                            pJObject["" + key] = registerInfo.qqEditStr.ToString();
+                        }
+                        break;
+                    default: { //默认
+                            form1.Invoke(new Action(() =>
+                            {
+                                if (Config.httpTag != httpTag) return;
+                                registerInfo.status = 3; //失败处理
+                                registerInfo.responseString = "key:"+key;
+                                form1.updateUi(httpTag);
+                            }));
+                            return;
+                        }
+                        break;
+                }
+            }
+
+            pJObject["account"] = registerInfo.userEditStr.ToString(); //账户  
+            pJObject["password"] = registerInfo.pwdEditStr.ToString(); //密码
+            pJObject["rpassword"] = registerInfo.pwdEditStr.ToString(); //确认密码
+            //获取验证码
+            if (Config.httpTag != httpTag) return;
+            String codeUrl = registerInfo.webUrl + "/verifycode.do?timestamp=" + FormUtils.getCurrentTime();
+            int codeNum = HttpUtils.getImage(codeUrl, index + "-" + httpTag + ".jpg", registerInfo.cookie, headJObject); //这里要分系统获取验证码
+            if (codeNum < 0)
+            {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 3; //失败处理
+                    registerInfo.responseString = "码图下载失败";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+            //获取打码平台的码
+            StringBuilder codeStrBuf = new StringBuilder();
+            int num = YDMWrapper.YDM_EasyDecodeByPath(
+                              Config.codeUserStr, Config.codePwdStr,
+                              Config.codeAppId, Config.codeSerect,
+                              AppDomain.CurrentDomain.BaseDirectory + "/pic/" + index + "-" + httpTag + ".jpg",
+                              1004, 20, codeStrBuf);
+            if (num <= 0)
+            {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 3; //失败处理
+                    registerInfo.responseString = "打码失败";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+            pJObject["verifyCode"] = codeStrBuf.ToString();
+            Thread.Sleep(2000);
+            headJObject["X-Requested-With"] = "XMLHttpRequest";
+            String regUrl = registerInfo.webUrl + "/register.do";
+            String p = "data=" + WebUtility.UrlEncode(pJObject.ToString());
+            String regRlt = HttpUtils.HttpPostHeader(regUrl, p, "application/x-www-form-urlencoded; charset=UTF-8", registerInfo.cookie, headJObject);
+            Console.WriteLine(regRlt);
+            if (String.IsNullOrEmpty(regRlt) || !FormUtils.IsJsonObject(regRlt)) {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 3; //失败处理
+                    registerInfo.responseString = "注册失败";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+
+            if (regRlt.Contains("success") && regRlt.Contains("true")) {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status =2; //失败处理
+                    registerInfo.responseString = "成功";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+
+            JObject rltbect = JObject.Parse(regRlt);
+            String msg = (String)rltbect["msg"];
+
+            form1.Invoke(new Action(() =>
+            {
+                if (Config.httpTag != httpTag) return;
+                registerInfo.status = 3; //失败处理
+                registerInfo.responseString = String.IsNullOrEmpty(msg)?"失败":msg;
+                form1.updateUi(httpTag);
+            }));
+            return;
         }
     }
 }
