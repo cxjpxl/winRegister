@@ -54,43 +54,14 @@ namespace WindowsFormsApp1.utils
             request.Timeout = 10 * 1000;
             request.ReadWriteTimeout = 10 * 1000;
             request.UserAgent = Config.userAgent;
-            if (headJObject["Host"] != null)
+            if (headJObject != null)
             {
-                SetHeaderValue(request.Headers, "Host", (String)headJObject["Host"]);
+                IEnumerable<JProperty> properties = headJObject.Properties();
+                foreach (JProperty item in properties)
+                {
+                    SetHeaderValue(request.Headers, item.Name, (String)item.Value);
+                }
             }
-            if (headJObject["Referer"] != null)
-            {
-                SetHeaderValue(request.Headers, "Referer", (String)headJObject["Referer"]);
-            }
-            if (headJObject["Origin"] != null)
-            {
-                SetHeaderValue(request.Headers, "Origin", (String)headJObject["Origin"]);
-            }
-            if (headJObject["X-Requested-With"] != null)
-            {
-                SetHeaderValue(request.Headers, "X-Requested-With", (String)headJObject["X-Requested-With"]);
-            }
-            if (headJObject["Accept"] != null)
-            {
-                SetHeaderValue(request.Headers, "Accept", (String)headJObject["Accept"]);
-            }
-            /*  if (headJObject["User-Agent"] != null)
-              {
-                  request.UserAgent = (String)headJObject["User-Agent"];
-              }*/
-            if (headJObject["Connection"] != null)
-            {
-                SetHeaderValue(request.Headers, "Connection", (String)headJObject["Connection"]);
-            }
-            if (headJObject["Accept-Encoding"] != null)
-            {
-                SetHeaderValue(request.Headers, "Accept-Encoding", (String)headJObject["Accept-Encoding"]);
-            }
-            if (headJObject["Accept-Language"] != null)
-            {
-                SetHeaderValue(request.Headers, "Accept-Language", (String)headJObject["Accept-Language"]);
-            }
-
 
             if (String.IsNullOrEmpty(contentType))
             {
@@ -161,42 +132,13 @@ namespace WindowsFormsApp1.utils
             request.ReadWriteTimeout = 10 * 1000;
             request.UserAgent = Config.userAgent;
 
-            if (headJObject["Host"] != null)
+            if (headJObject != null)
             {
-                SetHeaderValue(request.Headers, "Host", (String)headJObject["Host"]);
-            }
-            if (headJObject["Referer"] != null)
-            {
-                SetHeaderValue(request.Headers, "Referer", (String)headJObject["Referer"]);
-            }
-            if (headJObject["Origin"] != null)
-            {
-                SetHeaderValue(request.Headers, "Origin", (String)headJObject["Origin"]);
-                // request.Headers.Add("Origin", (String)headJObject["Origin"]);
-            }
-            if (headJObject["X-Requested-With"] != null)
-            {
-                SetHeaderValue(request.Headers, "X-Requested-With", (String)headJObject["X-Requested-With"]);
-            }
-            /*if (headJObject["Accept"] != null)
-            {
-                SetHeaderValue(request.Headers, "Accept", (String)headJObject["Accept"]);
-            }*/
-            if (headJObject["User-Agent"] != null)
-            {
-                request.UserAgent = (String)headJObject["User-Agent"];
-            }
-            if (headJObject["Connection"] != null)
-            {
-                SetHeaderValue(request.Headers, "Connection", (String)headJObject["Connection"]);
-            }
-            if (headJObject["Accept-Encoding"] != null)
-            {
-                SetHeaderValue(request.Headers, "Accept-Encoding", (String)headJObject["Accept-Encoding"]);
-            }
-            if (headJObject["Accept-Language"] != null)
-            {
-                SetHeaderValue(request.Headers, "Accept-Language", (String)headJObject["Accept-Language"]);
+                IEnumerable<JProperty> properties = headJObject.Properties();
+                foreach (JProperty item in properties)
+                {
+                    SetHeaderValue(request.Headers, item.Name, (String)item.Value);
+                }
             }
 
 
@@ -496,6 +438,6 @@ namespace WindowsFormsApp1.utils
             return 1;
         }
 
-
+     
     }
 }

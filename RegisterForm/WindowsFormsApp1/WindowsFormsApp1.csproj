@@ -63,6 +63,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="utlis\CodeUtils.cs" />
     <Compile Include="utlis\Config.cs" />
     <Compile Include="utlis\FileUtils.cs" />
     <Compile Include="utlis\FormUtils.cs" />

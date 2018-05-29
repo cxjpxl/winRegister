@@ -44,13 +44,21 @@ namespace WindowsFormsApp1
         private void registerBtn_Click(object sender, EventArgs e)
         {
 
-            userEdit.Text = "mm88818";
-            pwdEdit.Text = "sa88188";
-            nameEidt.Text = "王米大";
+             userEdit.Text = "ww665588";
+             pwdEdit.Text = "w987651";
+             nameEidt.Text = "吴五";
+             moneyPwdEdit.Text = "123456";
+             phoneNumEdit.Text = "13877388632";
+             qqEdit.Text = "189185422";
+             emailEdit.Text = "189185422@qq.com";
+
+         /*   userEdit.Text = "ww987655";
+            pwdEdit.Text = "w987651";
+            nameEidt.Text = "吴五天";
             moneyPwdEdit.Text = "123456";
-            phoneNumEdit.Text = "13580987632";
-            qqEdit.Text = "6581331122";
-            emailEdit.Text = "6581331212@qq.com";
+            phoneNumEdit.Text = "13877388611";
+            qqEdit.Text = "1891854221";
+            emailEdit.Text = "1891854221@qq.com";*/
 
             String userEditStr = userEdit.Text.ToString().Trim();
             if (String.IsNullOrEmpty(userEditStr)) {
@@ -212,6 +220,9 @@ namespace WindowsFormsApp1
                     case "E":
                         RegisterUtils.goRegisterE(this, registerInfo, httpTag, index);
                         break;
+                    case "H":
+                        RegisterUtils.goRegisterH(this, registerInfo, httpTag, index);
+                        break;
                 }
             }
             catch (Exception e) {
@@ -263,11 +274,7 @@ namespace WindowsFormsApp1
                         RegisterInfo registerInfo = list[i];
                         if (!String.IsNullOrEmpty(registerInfo.userEditStr)&&registerInfo.status ==2 ) {
                             String str = registerInfo.tag + "\t" +
-                                    registerInfo.userEditStr + "\t" +
-                                    registerInfo.pwdEditStr + "\t" +
-                                    registerInfo.webUrl + "\t" +
-                                    registerInfo.moneyPwdEditStr + "\t" +
-                                    registerInfo.responseString + "\n";
+                                    registerInfo.webUrl + "\n";
                             sw.WriteLine(str);
                         }
                     }

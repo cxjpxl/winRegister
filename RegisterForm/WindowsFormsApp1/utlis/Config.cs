@@ -9,6 +9,8 @@ namespace WindowsFormsApp1.utlis
         public static String codePwdStr = "";
         public static String codeMoneyStr = "";
 
+       // public static String netUrl = "http://172.28.2.75:8500";
+        public static String netUrl = "http://47.88.168.99:8500";
 
         //打码平台的开发者配置
         public static int codeAppId = 4320; //appId

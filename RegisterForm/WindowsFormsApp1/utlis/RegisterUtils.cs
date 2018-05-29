@@ -22,19 +22,7 @@ namespace WindowsFormsApp1.utlis
                     form1.updateUi(httpTag);
                 }));
             }
-            //第一步获取验证码
-            int codeMoney = YDMWrapper.YDM_GetBalance(Config.codeUserStr, Config.codePwdStr);
-            if (codeMoney <= 0)
-            {
-                form1.Invoke(new Action(() =>
-                {
-                    if (Config.httpTag != httpTag) return;
-                    registerInfo.status = 3; //失败处理
-                    registerInfo.responseString = "打码平台余额不足";
-                    form1.updateUi(httpTag);
-                }));
-                return;
-            }
+            
             if (Config.httpTag != httpTag) return;
             registerInfo.cookie = new CookieContainer();
             String codeUrl = registerInfo.webUrl + "/member/aspx/verification_code.aspx?_=" + FormUtils.getCurrentTime();
@@ -52,6 +40,21 @@ namespace WindowsFormsApp1.utlis
                 }));
                 return;
             }
+
+            //第一步获取验证码
+            int codeMoney = YDMWrapper.YDM_GetBalance(Config.codeUserStr, Config.codePwdStr);
+            if (codeMoney <= 0)
+            {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 3; //失败处理
+                    registerInfo.responseString = "打码平台余额不足";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+
             //获取打码平台的码
             StringBuilder codeStrBuf = new StringBuilder();
             int num = YDMWrapper.YDM_EasyDecodeByPath(
@@ -108,7 +111,7 @@ namespace WindowsFormsApp1.utlis
                 form1.Invoke(new Action(() =>
                 {
                     if (Config.httpTag != httpTag) return;
-                    registerInfo.status = 2; 
+                    registerInfo.status = 3; 
                     registerInfo.responseString = "已被注册";
                     form1.updateUi(httpTag);
                 }));
@@ -234,7 +237,7 @@ namespace WindowsFormsApp1.utlis
                 form1.Invoke(new Action(() =>
                 {
                     if (Config.httpTag != httpTag) return;
-                    registerInfo.status = 2;
+                    registerInfo.status = 3;
                     registerInfo.responseString = "已被注册";
                     form1.updateUi(httpTag);
                 }));
@@ -326,7 +329,7 @@ namespace WindowsFormsApp1.utlis
                 form1.Invoke(new Action(() =>
                 {
                     if (Config.httpTag != httpTag) return;
-                    registerInfo.status = 2;
+                    registerInfo.status = 3;
                     registerInfo.responseString = "已被注册";
                     form1.updateUi(httpTag);
                 }));
@@ -396,7 +399,7 @@ namespace WindowsFormsApp1.utlis
                 form1.Invoke(new Action(() =>
                 {
                     if (Config.httpTag != httpTag) return;
-                    registerInfo.status = 2; //失败处理
+                    registerInfo.status = 3; //失败处理
                     registerInfo.responseString = "被注册过";
                     form1.updateUi(httpTag);
                 }));
@@ -619,7 +622,7 @@ namespace WindowsFormsApp1.utlis
                 form1.Invoke(new Action(() =>
                 {
                     if (Config.httpTag != httpTag) return;
-                    registerInfo.status = 2;
+                    registerInfo.status = 3;
                     if (rlt.Contains(registerInfo.phoneNumEditStr))
                     {
                         registerInfo.responseString = "手机号码,已被注册";
@@ -765,7 +768,7 @@ namespace WindowsFormsApp1.utlis
                 form1.Invoke(new Action(() =>
                 {
                     if (Config.httpTag != httpTag) return;
-                    registerInfo.status = 2;
+                    registerInfo.status = 3;
                     registerInfo.responseString = "已被注册";
                     form1.updateUi(httpTag);
                 }));
@@ -931,7 +934,7 @@ namespace WindowsFormsApp1.utlis
                 form1.Invoke(new Action(() =>
                 {
                     if (Config.httpTag != httpTag) return;
-                    registerInfo.status = 2;
+                    registerInfo.status =3;
                     registerInfo.responseString = "已被注册";
                     form1.updateUi(httpTag);
                 }));
@@ -1057,7 +1060,7 @@ namespace WindowsFormsApp1.utlis
                 form1.Invoke(new Action(() =>
                 {
                     if (Config.httpTag != httpTag) return;
-                    registerInfo.status = 2;
+                    registerInfo.status = 3;
                     registerInfo.responseString = "已被注册";
                     form1.updateUi(httpTag);
                 }));
@@ -1219,7 +1222,7 @@ namespace WindowsFormsApp1.utlis
                 form1.Invoke(new Action(() =>
                 {
                     if (Config.httpTag != httpTag) return;
-                    registerInfo.status = 2;
+                    registerInfo.status = 3;
                     registerInfo.responseString = "已被注册";
                     form1.updateUi(httpTag);
                 }));
@@ -1281,6 +1284,9 @@ namespace WindowsFormsApp1.utlis
                 return;
             }
 
+
+
+
             JObject limitJObject = JObject.Parse(limitRlt);
             String codeUrl = registerInfo.webUrl + "/v/vCode?t=" + FormUtils.getCurrentTime();
             int codeNum = HttpUtils.getImage(codeUrl, index + "-" + httpTag + ".jpg", registerInfo.cookie, headJObject); //这里要分系统获取验证码
@@ -1295,6 +1301,41 @@ namespace WindowsFormsApp1.utlis
                 }));
                 return;
             }
+
+
+
+            /*****************判断真实姓名被注册了吗*********************/
+            //
+            String checkUrl = registerInfo.webUrl + "/v/user/checkUnique?val=" + WebUtility.UrlEncode(registerInfo.nameEidtStr) + "&type=1";
+            String rltCheck = HttpUtils.HttpGetHeader(checkUrl,"",registerInfo.cookie,headJObject);
+            if (String.IsNullOrEmpty(rltCheck)) {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 3; //失败处理
+                    registerInfo.responseString = "获取检查接口失败";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+
+            if (rltCheck.Equals("true")) {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 3; //失败处理
+                    registerInfo.responseString = "该姓名被注册过";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+
+            StringBuilder codeStrBuf = new StringBuilder();
+            int num = YDMWrapper.YDM_EasyDecodeByPath(
+                              Config.codeUserStr, Config.codePwdStr,
+                              Config.codeAppId, Config.codeSerect,
+                              AppDomain.CurrentDomain.BaseDirectory + "/pic/" + index + "-" + httpTag + ".jpg",
+                              1004, 20, codeStrBuf);
 
             registerInfo.cookie.Add(new Cookie("md5Password", "false","/", FileUtils.changeBaseUrl(registerInfo.webUrl)));
             registerInfo.cookie.Add(new Cookie("alertShade", "ok", "/", FileUtils.changeBaseUrl(registerInfo.webUrl)));
@@ -1322,7 +1363,8 @@ namespace WindowsFormsApp1.utlis
                          "&weixin=" + registerInfo.qqEditStr +
                          "&email=" + registerInfo.emailStr +
                          "&agree=on" +""+
-                         "&fundPwd="+registerInfo.moneyPwdEditStr;
+                         "&fundPwd="+registerInfo.moneyPwdEditStr+
+                         "&vCode="+ codeStrBuf.ToString();
         
             String rlt = HttpUtils.HttpPostHeader(registerUrl, pStr, "application/x-www-form-urlencoded; charset=UTF-8", registerInfo.cookie, headJObject);
             if (rlt == null)
@@ -1498,14 +1540,8 @@ namespace WindowsFormsApp1.utlis
                 return;
             }
             //获取打码平台的码
-            StringBuilder codeStrBuf = new StringBuilder();
-            int num = YDMWrapper.YDM_EasyDecodeByPath(
-                              Config.codeUserStr, Config.codePwdStr,
-                              Config.codeAppId, Config.codeSerect,
-                              AppDomain.CurrentDomain.BaseDirectory + "/pic/" + index + "-" + httpTag + ".jpg",
-                              1004, 20, codeStrBuf);
-            if (num <= 0)
-            {
+            String codeStr = CodeUtils.getImageCode(AppDomain.CurrentDomain.BaseDirectory + "/pic/" + index + "-" + httpTag + ".jpg");
+            if (String.IsNullOrEmpty(codeStr)) {
                 form1.Invoke(new Action(() =>
                 {
                     if (Config.httpTag != httpTag) return;
@@ -1515,8 +1551,9 @@ namespace WindowsFormsApp1.utlis
                 }));
                 return;
             }
-            pJObject["verifyCode"] = codeStrBuf.ToString();
-            Thread.Sleep(2000);
+
+            pJObject["verifyCode"] = codeStr.Trim();
+            Thread.Sleep(3000);
             headJObject["X-Requested-With"] = "XMLHttpRequest";
             String regUrl = registerInfo.webUrl + "/register.do";
             String p = "data=" + WebUtility.UrlEncode(pJObject.ToString());
@@ -1555,6 +1592,105 @@ namespace WindowsFormsApp1.utlis
                 form1.updateUi(httpTag);
             }));
             return;
+        }
+
+        /*****************H系统注册***********************************/
+        public static void goRegisterH(Form1 form1, RegisterInfo registerInfo, int httpTag, int index)
+        {
+            if (Config.httpTag != httpTag) return;
+            registerInfo.status = 1; //请求中
+            registerInfo.responseString = "请求中";
+            if (form1 != null)
+            {
+                form1.Invoke(new Action(() =>
+                {
+                    form1.updateUi(httpTag);
+                }));
+            }
+
+            registerInfo.cookie = new CookieContainer();
+            JObject headJObject = new JObject();
+            headJObject["Host"] = FileUtils.changeBaseUrl(registerInfo.webUrl);
+            headJObject["Origin"] = registerInfo.webUrl;
+            headJObject["Referer"] = registerInfo.webUrl + "/cn/register";
+            headJObject["X-Requested-With"] = "XMLHttpRequest";
+            String checkUrl = registerInfo.webUrl + "/cn/check-username/" + registerInfo.userEditStr;
+            String checkRlt = HttpUtils.HttpPostHeader(checkUrl,"","",registerInfo.cookie,headJObject);
+            Console.WriteLine(checkRlt);
+            if (String.IsNullOrEmpty(checkRlt) || !FormUtils.IsJsonObject(checkRlt) || !checkRlt.Contains("result")) {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 3; //失败处理
+                    registerInfo.responseString = "无法通过接口检测";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+
+            JObject checkObject = JObject.Parse(checkRlt);
+            int result =(int) checkObject["result"];
+            if (result != 0) {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 3; //失败处理
+                    registerInfo.responseString = "已被注册!";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+
+            /*
+            tjid:
+            submit: 提 交 
+             */
+            String pString = "username=" + registerInfo.userEditStr
+                            + "&" + "password=" + registerInfo.pwdEditStr
+                            + "&" + "repassword=" + registerInfo.pwdEditStr
+                            + "&" + "realname=" + WebUtility.UrlEncode(registerInfo.nameEidtStr)
+                            + "&" + "tel=" + registerInfo.phoneNumEditStr
+                            + "&" + "qq=" + registerInfo.qqEditStr
+                            + "&" + "qkmm=" + registerInfo.moneyPwdEditStr
+                            + "&" + "reqkmm=" + registerInfo.moneyPwdEditStr
+                            + "&" + "question=" + WebUtility.UrlEncode("您喜欢的球星")
+                            + "&" + "answer=" + WebUtility.UrlEncode("文思卡特")
+                            + "&" + "tjid=" + "&" + "submit=" + WebUtility.UrlEncode("提交")
+                            + "&" + "weixin=" + registerInfo.qqEditStr
+                            + "&" + "email=" + registerInfo.emailStr;
+            String registerUrl = registerInfo.webUrl + "/cn/register";
+            String regisiterRlt = HttpUtils.HttpPostHeader(registerUrl, pString, "application/x-www-form-urlencoded;",registerInfo.cookie,headJObject);
+            if (String.IsNullOrEmpty(regisiterRlt)) {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 3; //失败处理
+                    registerInfo.responseString = "注册失败!";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+            if (regisiterRlt.Contains(registerInfo.userEditStr)) {
+                form1.Invoke(new Action(() =>
+                {
+                    if (Config.httpTag != httpTag) return;
+                    registerInfo.status = 2; 
+                    registerInfo.responseString = "成功!";
+                    form1.updateUi(httpTag);
+                }));
+                return;
+            }
+
+
+            form1.Invoke(new Action(() =>
+            {
+                if (Config.httpTag != httpTag) return;
+                registerInfo.status = 3; //失败处理
+                registerInfo.responseString = "注册失败!";
+                form1.updateUi(httpTag);
+            }));
+            return;
+
         }
     }
 }
