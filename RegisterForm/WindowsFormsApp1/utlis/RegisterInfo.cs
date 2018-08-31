@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -24,6 +25,7 @@ namespace WindowsFormsApp1.utlis
             public String ansStr { get; set; }
             public String emailStr { get; set; } //邮箱号码
 
-        public CookieContainer cookie = null;
+            public JObject expJObject = new JObject();
+            public CookieContainer cookie = null;
     }
 }

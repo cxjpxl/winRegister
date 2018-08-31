@@ -22,13 +22,16 @@ namespace WindowsFormsApp1.utlis
                 ms.Position = 0;
                 ms.Read(arr, 0, (int)ms.Length);
                 ms.Close();
+                bmp.Dispose();
+                bmp = null;
                 strbaser64 = Convert.ToBase64String(arr);
-
+            
             }
             catch (Exception ex)
             {
 
             }
+            
 
             return strbaser64;
         }

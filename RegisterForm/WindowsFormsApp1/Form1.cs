@@ -44,15 +44,15 @@ namespace WindowsFormsApp1
         private void registerBtn_Click(object sender, EventArgs e)
         {
 
-             userEdit.Text = "ww665588";
+            userEdit.Text = "ww665588";
              pwdEdit.Text = "w987651";
              nameEidt.Text = "吴五";
              moneyPwdEdit.Text = "123456";
              phoneNumEdit.Text = "13877388632";
              qqEdit.Text = "189185422";
-             emailEdit.Text = "189185422@qq.com";
+            emailEdit.Text = "189185422@qq.com";
 
-         /*   userEdit.Text = "ww987655";
+         /* userEdit.Text = "ww987655";
             pwdEdit.Text = "w987651";
             nameEidt.Text = "吴五天";
             moneyPwdEdit.Text = "123456";
@@ -160,7 +160,8 @@ namespace WindowsFormsApp1
                     || registerInfo.tag.Equals("R")
                     || registerInfo.tag.Equals("G")
                     || registerInfo.tag.Equals("F")
-                    || registerInfo.tag.Equals("D"))
+                    || registerInfo.tag.Equals("D")
+                    || registerInfo.tag.Equals("B1"))
                 {
                     registerInfo.moneyPwdEditStr = moneyPwdEditStr.Substring(0, 4);
                 }
@@ -222,6 +223,9 @@ namespace WindowsFormsApp1
                         break;
                     case "H":
                         RegisterUtils.goRegisterH(this, registerInfo, httpTag, index);
+                        break;
+                    case "B1":
+                        RegisterUtils.goRegisterB1(this, registerInfo, httpTag, index);
                         break;
                 }
             }
